@@ -1,0 +1,138 @@
+https://github.com/vitor67ll/Iavitorapp.git
+pkill -f ollama && ollama serve &
+ollama pull phi3 && ollama serve &
+from flask import Flask, request, jsonify
+import requests  # Para chamar APIs externas (opcional)
+
+app = Flask(__name__)
+
+# Config da IA (Ollama local ou API externa)
+USE_OLLAMA = False  # Mude para True se quiser usar Ollama
+MODEL = "phi3"      # Modelo leve para Replit (phi3, gemma:2b)
+
+@app.route('/')
+def home():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>IA Vitor - Tudo em Um</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #f0f2f5;
+            }
+            #chat {
+                height: 400px;
+                overflow-y: auto;
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 10px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            #input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+            button {
+                background: #6e48aa;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+                width: 100%;
+            }
+            .msg {
+                margin-bottom: 10px;
+                padding: 8px 12px;
+                border-radius: 5px;
+            }
+            .user {
+                background: #e3f2fd;
+                text-align: right;
+            }
+            .ia {
+                background: #f5f5f5;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>IA Vitor (Direto no Replit!)</h1>
+        <div id="chat"></div>
+        <input type="text" id="input" placeholder="Pergunte algo...">
+        <button onclick="enviar()">Enviar</button>
+
+        <script>
+            function addMsg(autor, texto) {
+                const chat = document.getElementById('chat');
+                chat.innerHTML += `
+                    <div class="msg ${autor}">
+                        <strong>${autor === 'user' ? '👤 Você' : '🤖 IA'}:</strong> ${texto}
+                    </div>
+                `;
+                chat.scrollTop = chat.scrollHeight;
+            }
+
+            async function enviar() {
+                const input = document.getElementById('input');
+                const texto = input.value.trim();
+                if (!texto) return;
+                
+                addMsg('user', texto);
+                input.value = '';
+                
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: texto })
+                });
+                const data = await response.json();
+                
+                addMsg('ia', data.response);
+            }
+
+            // Enviar com Enter
+            document.getElementById('input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') enviar();
+            });
+        </script>
+    </body>
+    </html>
+    """
+
+@app.route('/ask', methods=['POST'])
+def ask_ia():
+    user_input = request.json.get('query', '')
+
+    if USE_OLLAMA:
+        try:
+            resposta = requests.post(
+                "http://localhost:11434/api/generate",
+                json={"model": MODEL, "prompt": user_input, "stream": False},
+                timeout=10
+            ).json().get("response", "🤖 IA: Tô com sono...")
+        except:
+            resposta = "🔴 Erro: Ollama offline! Rode 'ollama serve &' no Shell."
+    else:
+        # Respostas fixas (simula IA sem Ollama)
+        respostas = {
+            "olá": "E aí! Sou a IA Vitor. Bora bater um papo? 🚀",
+            "como você está?": "Tudo top! No Replit e rodando sem erro. E você?",
+            "quem é você?": "IA Vitor, a assistente que você programou! 😎"
+        }
+        resposta = respostas.get(user_input.lower(), "Não entendi... Pergunte outra coisa!")
+
+    return jsonify({"response": resposta})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
+cat ollama.log  # Ou o arquivo de log que você definiu
