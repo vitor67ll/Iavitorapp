@@ -1,5 +1,5 @@
 # Projeto Vitor IA - Abandonado pela OpenAI, mas ainda vivo!
-
+© 2025 – Vitor IA
 Este projeto foi inicialmente proposto com apoio da OpenAI, voltado a criar uma IA assistente para autistas (TEA nível 1), com foco em empatia adaptada, linguagem simbólica e integração com rede neural distribuída.
 
 ## ❌ Status atual:
