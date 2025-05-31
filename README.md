@@ -15,3 +15,11 @@ Este projeto foi inicialmente proposto com apoio da OpenAI, voltado a criar uma 
 para acessar o print entre contado
 
 **#VitorIAResiste #IAcomEmpatia #OpenSourceEtico**
+
+🔒 Este aplicativo é licenciado sob a MIT License.  
+Criado e mantido por Vitor Henrique (github.com/vitor67ll).  
+
+Uso educacional autorizado.  
+Uso comercial exige atribuição e respeito à licença.  
+
+© 2025 – Vitor IA
