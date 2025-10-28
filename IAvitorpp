@@ -2,7 +2,6 @@ ia-vitor-chatbot/
 ├── app.py
 ├── requirements.txt
 └── templates/
-    └── index.html (opcional, mas você está usando inline)
-flask
-requests
+    └── index.html (opcional, mas você está usando inline
+bash
 zip -r ia-vitor-chatbot.zip ia-vitor-chatbot/
